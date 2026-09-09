@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.text.TextUtils;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -145,6 +146,7 @@ import pro.sketchware.ia.LayoutGeneratorModelSelector;
 import pro.sketchware.ai.config.DeviceLanguage;
 import pro.sketchware.network.AiProviderService;
 
+
 @SuppressLint({"ClickableViewAccessibility", "RtlHardcoded", "SetTextI18n", "DefaultLocale"})
 public class LogicEditorActivity extends BaseAppCompatActivity implements View.OnClickListener, Vs, View.OnTouchListener, MoreblockImporterDialog.CallBack {
 	
@@ -193,6 +195,9 @@ public class LogicEditorActivity extends BaseAppCompatActivity implements View.O
 	
 	// Executor لخيوط الـ AI
 	private final ExecutorService aiExecutor = Executors.newSingleThreadExecutor();
+	// تعديل runSyntaxCheck لاستخدام خيط معالجة آمن وتفادي إنشائه باستمرار
+	private final ExecutorService syntaxExecutor = Executors.newSingleThreadExecutor();
+	
 	
 	public static ArrayList<String> getAllJavaFileNames(String projectScId) {
 		ArrayList<String> javaFileNames = new ArrayList<>();
@@ -1756,6 +1761,7 @@ public class LogicEditorActivity extends BaseAppCompatActivity implements View.O
 		
 		View customView = wB.a(this, R.layout.property_popup_selector_single);
 		RadioGroup radioGroup = customView.findViewById(R.id.rg_content);
+		
 		SoundPool soundPool = new SoundPool.Builder()
 		.setMaxStreams(1)
 		.setAudioAttributes(new AudioAttributes.Builder()
@@ -1763,6 +1769,7 @@ public class LogicEditorActivity extends BaseAppCompatActivity implements View.O
 		.setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
 		.build())
 		.build();
+		
 		soundPool.setOnLoadCompleteListener((soundPool1, sampleId, status) -> {
 			if (soundPool1 != null) {
 				soundPool1.play(sampleId, 1, 1, 1, 0, 1);
@@ -1777,6 +1784,7 @@ public class LogicEditorActivity extends BaseAppCompatActivity implements View.O
 			}
 			sound.setOnClickListener(v -> soundPool.load(jC.d(scId).i(Helper.getText(sound)), 1));
 		}
+		
 		dialog.setView(customView);
 		dialog.setPositiveButton(R.string.common_word_select, (v, which) -> {
 			RadioButton checkedRadioButton = radioGroup.findViewById(radioGroup.getCheckedRadioButtonId());
@@ -1784,8 +1792,13 @@ public class LogicEditorActivity extends BaseAppCompatActivity implements View.O
 			v.dismiss();
 		});
 		dialog.setNegativeButton(R.string.common_word_cancel, null);
+		
+		// تحرير الذاكرة عند إغلاق النافذة
+		dialog.setOnDismissListener(dialogInterface -> soundPool.release());
+		
 		dialog.show();
 	}
+	
 	
 	public void h(boolean z) {
 		logicTopMenu.setDeleteActive(false);
@@ -2055,17 +2068,17 @@ public class LogicEditorActivity extends BaseAppCompatActivity implements View.O
 		} else if (itemId == R.id.menu_logic_undo) {
 			undo();
 		} else if (itemId == R.id.menu_logic_showsource) {
-			 new MaterialAlertDialogBuilder(this)
-                    .setTitle("Source Code")
-                    .setItems(new CharSequence[]{
-                            "View Source Code",
-                            "Generate with AI"
-                    }, (dialog, which) -> {
-                        if (which == 0)      showSourceCode();
-                        else if (which == 1) showAiCodePromptDialog();
-                    })
-                    .setNegativeButton("Cancel", null)
-                    .show();
+			new MaterialAlertDialogBuilder(this)
+			.setTitle("Source Code")
+			.setItems(new CharSequence[]{
+				"View Source Code",
+				"Generate with AI"
+			}, (dialog, which) -> {
+				if (which == 0)      showSourceCode();
+				else if (which == 1) showAiCodePromptDialog();
+			})
+			.setNegativeButton("Cancel", null)
+			.show();
 		}
 		
 		return super.onOptionsItemSelected(menuItem);
@@ -2119,6 +2132,18 @@ public class LogicEditorActivity extends BaseAppCompatActivity implements View.O
 		super.onResume();
 		if (!super.isStoragePermissionGranted()) {
 			finish();
+		}
+	}
+	
+	// إضافة onDestroy لتنظيف الـ Activity بالكامل
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		if (syntaxExecutor != null && !syntaxExecutor.isShutdown()) {
+			syntaxExecutor.shutdownNow();
+		}
+		if (aiExecutor != null && !aiExecutor.isShutdown()) {
+			aiExecutor.shutdownNow();
 		}
 	}
 	
@@ -2556,17 +2581,17 @@ public class LogicEditorActivity extends BaseAppCompatActivity implements View.O
 		syntaxCheckHandler.postDelayed(syntaxCheckRunnable, 500);
 	}
 	
+	
 	private void runSyntaxCheck() {
 		if (o == null || o.getBlocks().isEmpty()) {
 			syntaxCheckContainer.setVisibility(View.GONE);
 			return;
 		}
 		
-		// Use yq to get the build config, same as showSourceCode()
 		yq yq = new yq(this, scId);
 		yq.a(jC.c(scId), jC.b(scId), jC.a(scId));
 		
-		Executors.newSingleThreadExecutor().execute(() -> {
+		syntaxExecutor.execute(() -> {
 			LogicSyntaxChecker.SyntaxResult result = LogicSyntaxChecker.check(
 			M.getActivityName(),
 			yq.N,
@@ -2575,6 +2600,7 @@ public class LogicEditorActivity extends BaseAppCompatActivity implements View.O
 			);
 			
 			runOnUiThread(() -> {
+				if (isFinishing() || isDestroyed()) return;
 				syntaxCheckContainer.setVisibility(View.VISIBLE);
 				syntaxCheckContainer.setTag(result);
 				if (result.isValid) {
@@ -2591,6 +2617,7 @@ public class LogicEditorActivity extends BaseAppCompatActivity implements View.O
 			});
 		});
 	}
+	
 	
 	public void t() {
 		fa = ObjectAnimator.ofFloat(O, View.TRANSLATION_X, 0.0f);
@@ -2649,31 +2676,38 @@ public class LogicEditorActivity extends BaseAppCompatActivity implements View.O
 	
 	public static class LoadEventBlocksTask {
 		private final WeakReference<LogicEditorActivity> activityRef;
-		private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 		
 		public LoadEventBlocksTask(LogicEditorActivity activity) {
 			activityRef = new WeakReference<>(activity);
 		}
 		
 		public void execute() {
-			getActivity().k();
-			executorService.execute(this::doInBackground);
-		}
-		
-		private void doInBackground() {
 			LogicEditorActivity activity = getActivity();
-			if (activity != null) {
-				activity.loadEventBlocks();
-				activity.runOnUiThread(() -> {
-					activity.h();
-				});
-			}
+			if (activity == null) return;
+			
+			activity.k();
+			ExecutorService executor = Executors.newSingleThreadExecutor();
+			executor.execute(() -> {
+				try {
+					LogicEditorActivity act = getActivity();
+					if (act != null) {
+						act.loadEventBlocks();
+						act.runOnUiThread(() -> {
+							if (act.isFinishing() || act.isDestroyed()) return;
+							act.h();
+						});
+					}
+				} finally {
+					executor.shutdown(); // إغلاق الـ Thread فور الانتهاء
+				}
+			});
 		}
 		
 		private LogicEditorActivity getActivity() {
 			return activityRef.get();
 		}
 	}
+	
 	
 	public class ImagePickerAdapter extends RecyclerView.Adapter<ImagePickerAdapter.ViewHolder> {
 		
@@ -2760,6 +2794,31 @@ public class LogicEditorActivity extends BaseAppCompatActivity implements View.O
 		}
 	}
 	
+	private String buildViewContext() {
+		StringBuilder sb = new StringBuilder();
+		java.util.ArrayList<com.besome.sketch.beans.ViewBean> views = jC.a(scId).d(M.getXmlName());
+		if (views == null) return "";
+		for (com.besome.sketch.beans.ViewBean view : views) {
+			if (view.id == null || view.id.isEmpty()) continue;
+			sb.append(view.id)
+			.append(": ")
+			.append(com.besome.sketch.beans.ViewBean.getViewTypeName(view.type))
+			.append("\n");
+		}
+		return sb.toString();
+	}
+	
+	private String buildExistingEventCode() {
+		try {
+			yq yqExporter = new yq(this, scId);
+			yqExporter.a(jC.c(scId), jC.b(scId), jC.a(scId));
+			String code = new Fx(M.getActivityName(), yqExporter.N, o.getBlocks(), isViewBindingEnabled).a();
+			return code == null ? "" : code.trim();
+		} catch (Exception e) {
+			return "";
+		}
+	}
+	
 	/**
 * يعرض حوار إدخال حيث يكتب المستخدم وصف ما يريد توليده، ثم يبدأ التوليد.
 */	
@@ -2841,6 +2900,9 @@ public class LogicEditorActivity extends BaseAppCompatActivity implements View.O
 		progress.setCancelable(true);
 		progress.setCanceledOnTouchOutside(false);
 		progress.show();
+		String viewContext = buildViewContext();
+		String existingCode = buildExistingEventCode();
+		String activityName = M.getActivityName();
 		
 		aiExecutor.execute(() -> {
 			try {
@@ -2852,11 +2914,39 @@ public class LogicEditorActivity extends BaseAppCompatActivity implements View.O
 				String modelName = selectedModel == null ? "llama-3.1-8b-instant" : selectedModel.modelName;
 				
 				// system prompt: اجعل الموديل يطبع كوداً فقط
-				String systemPrompt = "You are a precise Java code generator for Sketchware projects. "
-				+ "Output only valid Java source code (methods, classes or imports) that can be used in an Android project. "
-				+ "Do NOT include explanations, commentary, or anything outside the code block. "
-				+ "If you include code fences, they should be stripped by the caller. "
-				+ DeviceLanguage.responseInstruction();
+				String devicelang = DeviceLanguage.responseInstruction();
+				
+				
+				
+				
+				StringBuilder systemPrompt = new StringBuilder();
+				systemPrompt.append("You are generating Java logic for the \"").append(eventName)
+				.append("\" event of activity \"").append(activityName)
+				.append("\" inside a Sketchware Neo Android project (a visual block-based app builder that also supports raw Java). ");
+				systemPrompt.append("Reply with ONLY plain Java statements that belong inside that event's body - ")
+				.append("no method signature, no class wrapper, no imports, no markdown code fences, no explanation, no comments. ");
+				systemPrompt.append("Reference views using the pattern binding.viewId (e.g. binding.myButton.setText(\"Hi\")), ")
+				.append("which is how this project's generated activities access views.");
+				
+				if (!TextUtils.isEmpty(viewContext)) {
+					systemPrompt.append("\n\nThe current layout has exactly these views (id: type). Use ONLY these ids via binding.<id> - never invent an id that isn't listed here:\n")
+					.append(viewContext);
+				} else {
+					systemPrompt.append("\n\nNo views were found in the current layout, so avoid referencing any binding.<id> unless the user's request clearly implies a view that should exist.");
+				}
+				
+				if (!TextUtils.isEmpty(existingCode)) {
+					systemPrompt.append("\n\nThis event ALREADY contains the following logic:\n")
+					.append(existingCode)
+					.append("\n\nThe user's request below is asking you to modify or upgrade this existing logic, not replace it blindly. ")
+					.append("Keep everything that still makes sense, change only what the request asks for, and return the COMPLETE updated body (not just the new/changed lines, not a diff).");
+				} else {
+					systemPrompt.append("\n\nThis event currently has no logic yet - write it from scratch based on the request below.");
+				}
+				
+				systemPrompt.append(" Keep the code idiomatic Android/Java, use standard APIs, and prefer simple direct statements ")
+				.append("over unnecessary helper methods so more of it can be represented as visual blocks.")
+				.append(devicelang);
 				
 				// user prompt
 				String userPrompt = "User intent:\n" + userIntent + "\n\n"
@@ -2870,7 +2960,7 @@ public class LogicEditorActivity extends BaseAppCompatActivity implements View.O
 				
 				// استدعاء مزود الـ AI (مزامن)
 				String rawResponse = AiProviderService.getInstance().sendTextMessage(
-				providerId, modelName, systemPrompt, userPrompt, images
+				providerId, modelName, systemPrompt.toString(), userPrompt, images
 				);
 				
 				final String code = stripFences(rawResponse);
