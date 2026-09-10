@@ -142,8 +142,6 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 
 // AI project classes
-import pro.sketchware.ia.LayoutGeneratorModelSelector;
-import pro.sketchware.ai.config.DeviceLanguage;
 import pro.sketchware.network.AiProviderService;
 import pro.sketchware.network.AiRequestHandle;
 import pro.sketchware.ia.LogicGenTask;
@@ -196,8 +194,6 @@ public class LogicEditorActivity extends BaseAppCompatActivity implements View.O
 	private final Runnable syntaxCheckRunnable = this::runSyntaxCheck;
 	private SvgUtils svgUtils;
 	
-	// Executor لخيوط الـ AI
-	private final ExecutorService aiExecutor = Executors.newSingleThreadExecutor();
 	// تعديل runSyntaxCheck لاستخدام خيط معالجة آمن وتفادي إنشائه باستمرار
 	private final ExecutorService syntaxExecutor = Executors.newSingleThreadExecutor();
 	// يحتفظ بمقبض الطلب الجاري حتى نتمكن من إلغائه
@@ -2913,7 +2909,7 @@ public class LogicEditorActivity extends BaseAppCompatActivity implements View.O
 		View progressView = LayoutInflater.from(this).inflate(R.layout.ai_progress_dialog, null, false);
 		dialogBuilder.setView(progressView);
 		dialogBuilder.setCancelable(true);
-		final android.app.AlertDialog progressDialog = dialogBuilder.create();
+		final androidx.appcompat.app.AlertDialog progressDialog = dialogBuilder.create();
 		progressDialog.show();
 		
 		// ابدأ المهمة وخذ الـ handle
@@ -2961,28 +2957,7 @@ public class LogicEditorActivity extends BaseAppCompatActivity implements View.O
 	}
 	
 	
-	/** حوار بسيط لعرض الكود مع خيارات: نسخ، إدراج (نسخ للحافظة) وحفظ ملف */
-	private void showGeneratedCodeDialog(String code) {
-		AlertDialog.Builder b = new AlertDialog.Builder(this);
-		b.setTitle("Generated Java Code");
-		b.setMessage(code);
-		b.setPositiveButton("Insert / Copy to editor", (dialog, which) -> {
-			openCodeInViewerWithActions(code);
-		});
-		b.setNeutralButton("Copy", (dialog, which) -> {
-			ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-			if (cm != null) {
-				cm.setPrimaryClip(ClipData.newPlainText("generated_java", code));
-				Toast.makeText(this, "Copied to clipboard", Toast.LENGTH_SHORT).show();
-			}
-		});
-		b.setNegativeButton("Save file", (dialog, which) -> {
-			boolean ok = saveGeneratedCodeToFile("generated_ai_code_" + System.currentTimeMillis() + ".java", code);
-			Toast.makeText(this, ok ? "Saved to internal storage" : "Save failed", Toast.LENGTH_SHORT).show();
-		});
-		b.setOnCancelListener(dialog -> { /* لا شيء */ });
-		b.show();
-	}
+	
 	
 	/**
 * يعرض الشيفرة في CodeViewerActivity ثم يظهر حوار مع خيارات (Copy / Save to app / Close).
@@ -3022,17 +2997,6 @@ public class LogicEditorActivity extends BaseAppCompatActivity implements View.O
 		.show();
 	}
 	
-	/** مثال إدراج: نسخ الكود للحافظة وإخطار المستخدم. */
-	private void insertGeneratedCodeIntoEditor(String code) {
-		ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-		if (cm != null) {
-			cm.setPrimaryClip(ClipData.newPlainText("generated_java", code));
-		}
-		Toast.makeText(this, "Code copied to clipboard. Paste it into the editor.", Toast.LENGTH_LONG).show();
-		
-		// إن أردت إدراجاً مباشراً داخل المحرّر البنائي (blocks) سيتطلب محلل/محول من Java->blocks،
-		// أو استدعاء لآلية الحفظ داخل المشروع (jC أو API داخل المشروع). أخبرني إن تريد تنفيذ ذلك.
-	}
 	
 	/** حفظ ابتدائي داخل مجلد ملفات التطبيق */
 	private boolean saveGeneratedCodeToFile(String fileName, String code) {
