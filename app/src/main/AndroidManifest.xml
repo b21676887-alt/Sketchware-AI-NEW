@@ -27,6 +27,7 @@
         android:largeHeap="true"
         android:requestLegacyExternalStorage="true"
         android:theme="@style/Theme.SketchwarePro"
+        android:localeConfig="@xml/locales_config"
         android:usesCleartextTraffic="true"
         tools:targetApi="p">
         <activity
