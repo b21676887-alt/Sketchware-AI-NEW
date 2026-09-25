@@ -2,43 +2,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/chat_background">
+    android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/chat_background"
         app:liftOnScroll="false"
         app:liftOnScrollColor="@android:color/transparent">
 
-        <com.google.android.material.card.MaterialCardView
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="12dp"
-            android:layout_marginTop="8dp"
-            app:cardBackgroundColor="@color/chat_surface"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="0dp"
-            app:strokeColor="@color/chat_border"
-            app:strokeWidth="1dp">
-
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:minHeight="52dp"
-                app:navigationIcon="?attr/homeAsUpIndicator"
-                app:navigationIconTint="@color/chat_text_primary"
-                app:title="@string/myprojects_list_menu_title_create_a_new_project"
-                app:titleTextColor="@color/chat_text_primary" />
-        </com.google.android.material.card.MaterialCardView>
+            android:layout_height="?attr/actionBarSize"
+            app:navigationIcon="?attr/homeAsUpIndicator"
+            app:title="@string/myprojects_list_menu_title_create_a_new_project" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/chat_background"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
@@ -60,7 +42,7 @@
                     android:id="@+id/app_icon_layout"
                     android:layout_width="64dp"
                     android:layout_height="64dp"
-                    android:background="@drawable/bg_chat_project_icon">
+                    android:background="@drawable/circle_bg_grey">
 
                     <com.google.android.material.imageview.ShapeableImageView
                         android:id="@+id/app_icon"
@@ -77,17 +59,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:text="@string/myprojects_settings_description_change_icon"
-                    android:textColor="@color/chat_accent"
                     android:textSize="12sp" />
             </LinearLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
+           <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_app_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                app:boxBackgroundColor="@color/chat_surface"
-                app:boxStrokeColor="@color/chat_border"
                 app:startIconDrawable="@drawable/ic_mtrl_android">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -103,8 +82,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                app:boxBackgroundColor="@color/chat_surface"
-                app:boxStrokeColor="@color/chat_border"
                 app:placeholderText="com.my.newproject"
                 app:startIconDrawable="@drawable/ic_mtrl_package">
 
@@ -121,8 +98,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                app:boxBackgroundColor="@color/chat_surface"
-                app:boxStrokeColor="@color/chat_border"
                 app:startIconDrawable="@drawable/ic_mtrl_interests">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -132,14 +107,6 @@
                     android:imeOptions="actionDone"
                     android:inputType="text" />
             </com.google.android.material.textfield.TextInputLayout>
-
-            <LinearLayout
-                android:id="@+id/ad_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:gravity="center"
-                android:orientation="vertical" />
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
