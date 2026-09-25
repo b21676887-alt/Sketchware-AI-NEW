@@ -58,11 +58,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="@string/myprojects_settings_description_change_icon"
+                    android:text="@string/myprojects_settings_description_create_icon"
                     android:textSize="12sp" />
             </LinearLayout>
 
-           <com.google.android.material.textfield.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_app_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -112,11 +112,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="17dp"
-                app:cardBackgroundColor="@color/chat_surface"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/chat_border"
-                app:strokeWidth="1dp">
+                app:strokeColor="?attr/colorOutline">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -153,7 +149,7 @@
                             android:layout_width="1dp"
                             android:layout_height="match_parent"
                             android:layout_marginVertical="12dp"
-                            app:dividerColor="@color/chat_border"
+                            app:dividerColor="?attr/colorOutline"
                             app:dividerInsetEnd="4dp"
                             app:dividerInsetStart="8dp" />
 
@@ -163,8 +159,7 @@
                             android:layout_height="36dp"
                             android:paddingVertical="6dp"
                             android:scaleType="fitCenter"
-                            android:src="@drawable/ic_mtrl_help"
-                            app:tint="@color/chat_text_secondary" />
+                            android:src="@drawable/ic_mtrl_help" />
                     </LinearLayout>
 
                     <ImageView
@@ -184,11 +179,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="13dp"
-                app:cardBackgroundColor="@color/chat_surface"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/chat_border"
-                app:strokeWidth="1dp">
+                app:strokeColor="?attr/colorOutline">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -208,14 +199,13 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="8dp"
                             android:src="@drawable/ic_mtrl_palette"
-                            app:tint="@color/chat_accent" />
+                            app:tint="?attr/colorPrimary" />
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="@string/theme_section_title"
-                            android:textColor="@color/chat_text_primary"
                             android:textSize="16sp"
                             android:textStyle="bold" />
 
@@ -241,7 +231,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="12dp"
                         android:text="@string/theme_section_description"
-                        android:textColor="@color/chat_text_secondary"
+                        android:textColor="?attr/colorOnSurfaceVariant"
                         android:textSize="14sp" />
 
                     <androidx.recyclerview.widget.RecyclerView
@@ -258,11 +248,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="13dp"
                 android:layout_marginBottom="64dp"
-                app:cardBackgroundColor="@color/chat_surface"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="0dp"
-                app:strokeColor="@color/chat_border"
-                app:strokeWidth="1dp">
+                app:strokeColor="?attr/colorOutline">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -292,7 +278,6 @@
                             android:marqueeRepeatLimit="marquee_forever"
                             android:singleLine="true"
                             android:text="1"
-                            android:textColor="@color/chat_text_primary"
                             android:textSize="16sp" />
 
                         <TextView
@@ -300,8 +285,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
                             android:gravity="center"
-                            android:text="@string/common_word_project_information_version_code"
-                            android:textColor="@color/chat_text_secondary"
+                            android:text="@string/project_version_code"
                             android:textSize="12sp" />
                     </LinearLayout>
 
@@ -311,8 +295,7 @@
                         android:layout_height="24dp"
                         android:layout_marginHorizontal="6dp"
                         android:scaleType="fitCenter"
-                        android:src="@drawable/ic_mtrl_version_control"
-                        app:tint="@color/chat_accent" />
+                        android:src="@drawable/ic_mtrl_version_control" />
 
                     <LinearLayout
                         android:id="@+id/ver_name_holder"
@@ -336,7 +319,6 @@
                             android:marqueeRepeatLimit="marquee_forever"
                             android:singleLine="true"
                             android:text="1"
-                            android:textColor="@color/chat_text_primary"
                             android:textSize="16sp" />
 
                         <TextView
@@ -344,8 +326,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="4dp"
                             android:gravity="center"
-                            android:text="@string/common_word_project_information_version_name"
-                            android:textColor="@color/chat_text_secondary"
+                            android:text="@string/project_version_name"
                             android:textSize="12sp" />
                     </LinearLayout>
                 </LinearLayout>
@@ -357,32 +338,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="@color/chat_surface"
-        android:orientation="vertical">
+        android:background="?attr/colorSurface"
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="12dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/cancel"
+            style="@style/Widget.Material3Expressive.Button.TonalButton"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="12dp">
+            android:layout_marginEnd="16dp"
+            android:layout_weight="1"
+            android:text="@string/common_word_cancel" />
 
-            <Button
-                android:id="@+id/cancel"
-                style="@style/Widget.Material3Expressive.Button.TonalButton"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="16dp"
-                android:layout_weight="1"
-                android:text="@string/common_word_cancel" />
-
-            <Button
-                android:id="@+id/ok_button"
-                style="@style/Widget.Material3Expressive.Button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/common_word_create" />
-        </LinearLayout>
+        <Button
+            android:id="@+id/ok_button"
+            style="@style/Widget.Material3Expressive.Button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/common_word_create" />
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
