@@ -252,6 +252,11 @@ public class ConfigActivity extends BaseAppCompatActivity {
         return card;
     }
 
+    // Overload: accept string resource IDs (int) and forward to the String-based method
+    private View createSwitchPreference(int iconRes, int titleRes, int descRes, String prefKey) {
+        return createSwitchPreference(iconRes, getString(titleRes), getString(descRes), prefKey);
+    }
+
     private View createSwitchPreference(int iconRes, String title, String desc, String prefKey) {
         LinearLayout row = new LinearLayout(this);
         row.setOrientation(LinearLayout.HORIZONTAL);
@@ -478,4 +483,4 @@ public class ConfigActivity extends BaseAppCompatActivity {
             return defValue;
         }
     }
-}
+    }
