@@ -63,6 +63,8 @@ public class AppSettings extends BaseAppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return WindowInsetsCompat.CONSUMED;
         });
+        
+        binding.topAppBar.setTitle(R.string.common_word_settings);
 
         binding.topAppBar.setNavigationOnClickListener(Helper.getBackPressedClickListener(this));
         setupPreferences(binding.content);
