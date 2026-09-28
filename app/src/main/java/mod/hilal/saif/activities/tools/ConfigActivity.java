@@ -205,7 +205,7 @@ public class ConfigActivity extends BaseAppCompatActivity {
         content.addView(createCategoryHeader(Helper.getResString(R.string.title_rootfeatures_category)));
         content.addView(createPreferenceCard(
                 createSwitchPreference(R.drawable.ic_mtrl_code, R.string.pref_root_install_title, R.string.pref_root_install_summary, SETTING_ROOT_AUTO_INSTALL_PROJECTS),
-                createSwitchPreference(R.drawable.ic_mtrl_apk_install, R.string.pref_root_launch_title, pref_root_launch_summary, SETTING_ROOT_AUTO_OPEN_AFTER_INSTALLING)
+                createSwitchPreference(R.drawable.ic_mtrl_apk_install, R.string.pref_root_launch_title, R.string.pref_root_launch_summary, SETTING_ROOT_AUTO_OPEN_AFTER_INSTALLING)
         ));
     }
 
