@@ -194,7 +194,7 @@ public class ConfigActivity extends BaseAppCompatActivity {
         TextView[] backupNameDesc = new TextView[1];
         content.addView(createPreferenceCard(
                 createActionPreference(R.drawable.ic_mtrl_folder, R.string.pref_backup_dir_title, getBackupPath(), v -> showBackupDirDialog(backupDirDesc[0]), backupDirDesc),
-                createActionPreference(R.drawable.ic_mtrl_file, R.string.pref_backup_dir_summary, v -> showBackupNameDialog(), backupNameDesc)
+                createActionPreference(R.drawable.ic_mtrl_file, R.string.pref_backup_filename_title, R.string.pref_backup_filename_summary, v -> showBackupNameDialog(), backupNameDesc)
         ));
 
         content.addView(createCategoryHeader(Helper.getResString(R.string.title_versioncontrol_category)));
