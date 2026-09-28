@@ -184,28 +184,28 @@ public class ConfigActivity extends BaseAppCompatActivity {
                 createSwitchPreference(R.drawable.ic_mtrl_code, R.string.pref_block_highlighting_title, R.string.pref_block_highlighting_summary, SETTING_USE_ASD_HIGHLIGHTER)
         ));
 
-        content.addView(createCategoryHeader("Project Explorer"));
+        content.addView(createCategoryHeader(Helper.getResString(R.string.title_explorer_project_category)));
         content.addView(createPreferenceCard(
-                createSwitchPreference(R.drawable.ic_mtrl_tree_view, "Enable Tree View", "Display project files in a hierarchical tree structure", SETTING_TREE_VIEW)
+                createSwitchPreference(R.drawable.ic_mtrl_tree_view, R.string.pref_enable_treeview_title, R.string.pref_enable_treeview_summary, SETTING_TREE_VIEW)
         ));
 
-        content.addView(createCategoryHeader("Backup & Restore"));
+        content.addView(createCategoryHeader(Helper.getResString(R.string.title_backuprestore_category)));
         TextView[] backupDirDesc = new TextView[1];
         TextView[] backupNameDesc = new TextView[1];
         content.addView(createPreferenceCard(
-                createActionPreference(R.drawable.ic_mtrl_folder, "Backup Directory", getBackupPath(), v -> showBackupDirDialog(backupDirDesc[0]), backupDirDesc),
-                createActionPreference(R.drawable.ic_mtrl_file, "Backup Filename Format", "Configure SWB naming syntax", v -> showBackupNameDialog(), backupNameDesc)
+                createActionPreference(R.drawable.ic_mtrl_folder, R.string.pref_backup_dir_title, getBackupPath(), v -> showBackupDirDialog(backupDirDesc[0]), backupDirDesc),
+                createActionPreference(R.drawable.ic_mtrl_file, R.string.pref_backup_dir_summary, v -> showBackupNameDialog(), backupNameDesc)
         ));
 
-        content.addView(createCategoryHeader("Version Control"));
+        content.addView(createCategoryHeader(Helper.getResString(R.string.title_versioncontrol_category)));
         content.addView(createPreferenceCard(
-                createSwitchPreference(R.drawable.ic_mtrl_version_control, "New Version Control", "Use optimized Git-based system for project history", SETTING_USE_NEW_VERSION_CONTROL)
+                createSwitchPreference(R.drawable.ic_mtrl_version_control, R.string.pref_new_version_control_title, R.string.pref_new_version_control_summary, SETTING_USE_NEW_VERSION_CONTROL)
         ));
 
-        content.addView(createCategoryHeader("Root Features"));
+        content.addView(createCategoryHeader(Helper.getResString(R.string.title_rootfeatures_category)));
         content.addView(createPreferenceCard(
-                createSwitchPreference(R.drawable.ic_mtrl_code, "Auto Install Projects (Root)", "Silently install compiled APKs using root access", SETTING_ROOT_AUTO_INSTALL_PROJECTS),
-                createSwitchPreference(R.drawable.ic_mtrl_apk_install, "Auto Open App", "Launch application immediately after install", SETTING_ROOT_AUTO_OPEN_AFTER_INSTALLING)
+                createSwitchPreference(R.drawable.ic_mtrl_code, R.string.pref_root_install_title, R.string.pref_root_install_summary, SETTING_ROOT_AUTO_INSTALL_PROJECTS),
+                createSwitchPreference(R.drawable.ic_mtrl_apk_install, R.string.pref_root_launch_title, pref_root_launch_summary, SETTING_ROOT_AUTO_OPEN_AFTER_INSTALLING)
         ));
     }
 
