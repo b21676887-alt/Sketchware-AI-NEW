@@ -19,7 +19,7 @@ import android.widget.TextView;
 import android.widget.FrameLayout;
 
 import androidx.fragment.app.FragmentActivity;
-
+import android.annotation.SuppressLint;
 
 import com.besome.sketch.beans.ProjectFileBean;
 import com.besome.sketch.beans.ViewBean;
