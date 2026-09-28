@@ -256,6 +256,21 @@ public class ConfigActivity extends BaseAppCompatActivity {
     private View createSwitchPreference(int iconRes, int titleRes, int descRes, String prefKey) {
         return createSwitchPreference(iconRes, getString(titleRes), getString(descRes), prefKey);
     }
+    
+        // Overload: accept title and desc as resource IDs
+    private View createActionPreference(int iconRes, int titleRes, int descRes, View.OnClickListener listener, TextView[] outDescView) {
+        return createActionPreference(iconRes, getString(titleRes), getString(descRes), listener, outDescView);
+    }
+    
+    // Overload: accept title resource id and desc String
+    private View createActionPreference(int iconRes, int titleRes, String desc, View.OnClickListener listener, TextView[] outDescView) {
+        return createActionPreference(iconRes, getString(titleRes), desc, listener, outDescView);
+    }
+    
+    // Overload: accept title resource id and no desc (uses empty desc)
+    private View createActionPreference(int iconRes, int titleRes, View.OnClickListener listener, TextView[] outDescView) {
+        return createActionPreference(iconRes, getString(titleRes), "", listener, outDescView);
+    }
 
     private View createSwitchPreference(int iconRes, String title, String desc, String prefKey) {
         LinearLayout row = new LinearLayout(this);
