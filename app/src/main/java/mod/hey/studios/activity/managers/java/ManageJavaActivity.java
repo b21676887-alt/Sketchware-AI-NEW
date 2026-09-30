@@ -353,6 +353,15 @@ import pro.sketchware.utility.TranslationFunction;
 
         binding.noContentLayout.setVisibility(currentTree.isEmpty() ? View.VISIBLE : View.GONE);
     }
+    
+    private static final int MENU_ADD_ACTIVITY = 1;
+    private static final int MENU_REMOVE_ACTIVITY = 2;
+    private static final int MENU_ADD_SERVICE = 3;
+    private static final int MENU_REMOVE_SERVICE = 4;
+    private static final int MENU_EDIT = 5;
+    private static final int MENU_EDIT_WITH = 6;
+    private static final int MENU_RENAME = 7;
+    private static final int MENU_DELETE_ITEM = 8;
 
     public class FilesAdapter extends RecyclerView.Adapter<FilesAdapter.ViewHolder> {
         private final List<String> currentTree;
