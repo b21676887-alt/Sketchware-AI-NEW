@@ -504,7 +504,7 @@ import pro.sketchware.utility.TranslationFunction;
             popupMenuMenu.add(Menu.NONE, MENU_DELETE_ITEM, Menu.NONE, R.string.common_word_delete);
 
             popupMenu.setOnMenuItemClickListener(item -> {
-                switch (item.getTitle().toString()) {
+                switch (item.getItemId()) {
                     case MENU_ADD_ACTIVITY -> {
                         frc.getJavaManifestList().add(getFullName(position));
                         FileUtil.writeFile(fpu.getManifestJava(sc_id), new Gson().toJson(frc.listJavaManifest));
